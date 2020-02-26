@@ -1,8 +1,7 @@
 package model.logic;
 
-import model.data_structures.DataList;
-import model.data_structures.DataNode;
-import model.data_structures.IDataList;
+import model.data_structures.IQueue;
+import model.data_structures.Queue;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -18,90 +17,102 @@ import com.google.gson.stream.JsonReader;
  *
  */
 public class Modelo {
-		
-	/**
-	 * Lista doblemente encadenada
-	 */
-	private IDataList<Feature> dataList;
+
+	private IQueue<Feature> queue;
 	
+	private Comparable<Feature>[] featuresArray;
+
 	/**
 	 * Constructor del modelo del mundo con capacidad dada
+	 * 
 	 * @param tamano
 	 */
-	public Modelo()
-	{
-		dataList = new DataList<Feature>();
-	}
-	
-	/**
-	 * Servicio de consulta de numero de elementos presentes en el modelo 
-	 * @return numero de elementos presentes en el modelo
-	 */
-	public int getFeaturesSize()
-	{
-		return dataList.getSize();
-	}
-	
-	public Feature getFirstFeature(){
-		return dataList.getFirstNode().getNodeInfo();
-	}
-	
-	public Feature getLastFeature(){
-		return dataList.getLastNode() == null ? null : dataList.getLastNode().getNodeInfo();
-	}
-	
-	public void loadDataList(String path){
-		loadGson(path);
+	public Modelo() {
+		queue = new Queue<Feature>();
 	}
 
 	/**
-	 * Requerimiento de agregar dato
-	 * @param dato
+	 * Servicio de consulta de numero de elementos presentes en el modelo
+	 * 
+	 * @return numero de elementos presentes en el modelo
 	 */
-	public void agregar(Feature dato)
-	{	
-		dataList.addNode(dato);
+	public int getFeaturesSize() {
+		return queue.size();
+	}
+
+	public Feature getFirstFeature() {
+		return queue.getFront();
 	}
 	
-	/**
-	 * Busca un comparendo dado su object id
-	 * @param objectId Id del comparendo a buscar
-	 * @return comparendo encontrado. null si no lo encontro
-	 */
-	public Feature buscar(int objectId)
-	{
+	public Feature getLastFeature(){
+		return queue.getBack();
+	}
+
+	public Comparable<Feature>[] copyFeatures(){
 		
-		DataNode<Feature> actualNode = dataList.getFirstNode();
-		boolean found = false;
-		
-		while( actualNode != null ){
+		if( !queue.isEmpty() ){
+			featuresArray = new Comparable[ queue.size() ];
 			
-			if( objectId == actualNode.getNodeInfo().getObjectId() ){
-				found = true;
-				break;
+			for( int i = 0; i < featuresArray.length; i++ ){
+				featuresArray[i] = queue.dequeue();
 			}
-			
-			actualNode = actualNode.getNext();
-			
 		}
 		
-		return found ? actualNode.getNodeInfo() : null;
+		Comparable<Feature>[] featuresLoaded = new Comparable[ featuresArray.length ];
+		
+		featuresLoaded = featuresArray;
+		
+		return featuresLoaded;
 	}
 	
-	private void loadGson(String path){
+	public void shellSort( Comparable<Feature>[] data ){
 		
-		try{
-			JsonReader reader = new JsonReader( new FileReader(path) );
+		int n = data.length;
+		int h = 1;
+		
+		while( h < n/3 )
+			h = 3*h + 1;
+		
+		while(h >= 1){
+			
+			for(int i = h; i < n; i++){
+				for(int j = i; j>=h && less( data[j], data[j-h] ); j-=h ){
+					Comparable<Feature> swap = data[j-h];
+					data[j-h] = data[j];
+					data[j] = swap;
+				}
+			}
+			
+			h = h/3;
+		}
+		
+	}
+	
+	private boolean less(Comparable obj1, Comparable obj2){
+		return obj1.compareTo(obj2) < 0;
+	}
+	
+	public boolean loadDataList(String path) {
+		if( loadGson(path) )
+			return true;
+		else	
+			return false;
+	}
+
+	private boolean loadGson(String path) {
+
+		try {
+			System.out.println(path);
+			JsonReader reader = new JsonReader(new FileReader(path));
 			JsonElement featuresElement = JsonParser.parseReader(reader).getAsJsonObject().get("features");
 			JsonArray jsonFeaturesArray = featuresElement.getAsJsonArray();
-			
-			
-			for( JsonElement element : jsonFeaturesArray ){
-				
+
+			for (JsonElement element : jsonFeaturesArray) {
+
 				String elemType = element.getAsJsonObject().get("type").getAsString();
-				
+
 				JsonElement elemProperties = element.getAsJsonObject().get("properties");
-				
+
 				int elemId = elemProperties.getAsJsonObject().get("OBJECTID").getAsInt();
 				String elemDate = elemProperties.getAsJsonObject().get("FECHA_HORA").getAsString();
 				String elemDetectionMethod = elemProperties.getAsJsonObject().get("MEDIO_DETE").getAsString();
@@ -110,38 +121,37 @@ public class Modelo {
 				String elemInfraction = elemProperties.getAsJsonObject().get("INFRACCION").getAsString();
 				String elemInfractionReason = elemProperties.getAsJsonObject().get("DES_INFRAC").getAsString();
 				String elemLocality = elemProperties.getAsJsonObject().get("LOCALIDAD").getAsString();
-				
+
 				JsonElement elemGeometry = element.getAsJsonObject().get("geometry");
-				
+
 				String elemGeomType = elemGeometry.getAsJsonObject().get("type").getAsString();
 				JsonArray elemGeomCoordinates = elemGeometry.getAsJsonObject().get("coordinates").getAsJsonArray();
 				ArrayList<Integer> elemCoordinates = new ArrayList<Integer>();
-				
-				for( JsonElement elemCoord : elemGeomCoordinates ){
+
+				for (JsonElement elemCoord : elemGeomCoordinates) {
 					int actualCoord = elemCoord.getAsInt();
-					elemCoordinates.add( actualCoord );
+					elemCoordinates.add(actualCoord);
 				}
-				
-				Feature feature = new Feature(elemType, elemId, elemDate, elemDetectionMethod, elemVehicleClass, 
-						elemServiceType, elemInfraction, elemInfractionReason, elemLocality, elemGeomType, elemCoordinates);
-				
+
+				Feature feature = new Feature(elemType, elemId, elemDate, elemDetectionMethod, elemVehicleClass,
+						elemServiceType, elemInfraction, elemInfractionReason, elemLocality, elemGeomType,
+						elemCoordinates);
+
 				loadDataNode(feature);
-				
+
 			}
-			
+
+		} catch (FileNotFoundException e) {
+			System.out.println("ERROR! File not found\n\n");
+			return false;
 		}
-		catch(FileNotFoundException e){
-			System.out.println("ERROR! File not found");
-		}
 		
-		
-	}
-	
-	private void loadDataNode( Feature nodeInfo ){
-		
-		dataList.addNode(nodeInfo);
-		
+		return true;
+
 	}
 
+	private void loadDataNode(Feature feature) {
+		queue.enqueue(feature);
+	}
 
 }

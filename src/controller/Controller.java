@@ -14,7 +14,7 @@ public class Controller {
 	/* Instancia de la Vista*/
 	private View view;
 	
-	Static final String DATA_PATH = "./data/comparendos_dei_2018.geojson";
+	static final String DATA_PATH = "./data/comparendos_dei_2018_small.geojson";
 	
 	/**
 	 * Crear la vista y el modelo del proyecto
@@ -28,9 +28,11 @@ public class Controller {
 		
 	public void run() 
 	{
+		loadFeatures();
+		
 		Scanner lector = new Scanner(System.in);
 		boolean fin = false;
-		String respuesta = "";
+		Comparable<Feature>[] features = null;
 
 		while( !fin ){
 			view.printMenu();
@@ -38,20 +40,18 @@ public class Controller {
 			int option = lector.nextInt();
 			switch(option){
 				case 1:
-					view.printMessage("--------- \nCargando datos de comparendos...");
-				    modelo = new Modelo();
-				    modelo.loadDataList(DATA_PATH);
-				    Feature firstFeature = modelo.getFirstFeature();
-				    Feature lastFeature = modelo.getLastFeature();
-				    int featuresNumber = modelo.getFeaturesSize();
-				    view.printGeneralFeaturesInfo(firstFeature, lastFeature, featuresNumber);
+					view.printMessage("--------- \nCopiando comparendos...");
+					features = modelo.copyFeatures();
+					view.printMessage("El nuevo arreglo tiene " + features.length + " comparendo(s)");
 					break;
-
+				
 				case 2:
-					view.printMessage("--------- \nNumero de ID: ");
-					int dato = Integer.parseInt( lector.next() );
-					Feature featureFounded = modelo.buscar(dato);
-					view.printFeature( featureFounded );				
+					view.printMessage("--------- \nOrdenando por Shell sort...");
+					if( features != null ){
+						modelo.shellSort(features);
+						view.printTenFirstAndLast( features );
+					}else
+						view.printMessage("\n¡¡¡Primero copia los comparendos antes de ordenarlos!!!\n");
 					break;
 					
 				case 3: 
@@ -67,4 +67,15 @@ public class Controller {
 		}
 		
 	}	
+	
+	private void loadFeatures(){
+		view.printMessage("--------- \nCargando datos de comparendos...");
+	    modelo = new Modelo();
+	    if( modelo.loadDataList(DATA_PATH) ){
+		    Feature firstFeature = modelo.getFirstFeature();
+		    Feature lastFeature = modelo.getLastFeature();
+		    int featuresNumber = modelo.getFeaturesSize();
+		    view.printGeneralFeaturesInfo(firstFeature, lastFeature, featuresNumber);
+	    }
+	}
 }

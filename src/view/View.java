@@ -15,8 +15,8 @@ public class View
 	    
 		public void printMenu()
 		{
-			System.out.println("1. Cargar datos de los comparendos");
-			System.out.println("2. Consultar comparendo");
+			System.out.println("\n1. Requerimiento 1 (copiar comparendos)");
+			System.out.println("2. Requerimiento 2 (Ordenar ascendentemente con Shell sort)");
 			System.out.println("3. Exit");
 			System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 		}
@@ -60,8 +60,32 @@ public class View
 			
 		}
 		
-		public void printModelo(Modelo modelo)
+		public void printTenFirstAndLast( Comparable<Feature>[] data )
 		{
-			// TODO implementar
+			printMessage("\nRESULTADO::::\n");
+			if( data.length > 20 ){
+				
+				for( int i = 0; i < 10; i++ ){
+					printMessage("\n\t" + (i+1) + ":\n");
+					Feature f = (Feature)data[i];
+					printFeature( f );
+				}
+				
+				int firstOfTenLast = data.length-10;
+				
+				for( int i = firstOfTenLast-1; i < data.length; i++ ){
+					printMessage("\n\t" + (i+1) + ":\n");
+					Feature f = (Feature)data[i];
+					printFeature( f );
+				}
+				
+			}
+			else{
+				for(int i = 0; i < data.length; i++){
+					printMessage("\n\t" + (i+1) + ":\n");
+					Feature f = (Feature)data[i];
+					printFeature( f );
+				}
+			}
 		}
 }

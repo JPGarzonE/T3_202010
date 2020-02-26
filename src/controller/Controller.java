@@ -48,13 +48,38 @@ public class Controller {
 				case 2:
 					view.printMessage("--------- \nOrdenando por Shell sort...");
 					if( features != null ){
+						features = modelo.copyFeatures();
+						long startTime = System.currentTimeMillis();
 						modelo.shellSort(features);
+						long endTime = System.currentTimeMillis();
+						long duration = endTime - startTime;
+						view.printMessage("\nTiempo de ordenamiento Shell Sort: " + duration + " milisegundos");
+						view.printTenFirstAndLast( features );
+					}else
+						view.printMessage("\n¡¡¡Primero copia los comparendos antes de ordenarlos!!!\n");
+					break;
+				
+				case 3:
+					view.printMessage("--------- \nOrdenando por Merge sort...");
+					if( features != null ){
+						
+						features = modelo.copyFeatures();
+						Comparable[] featuresAux = new Comparable[ features.length ];
+						
+						long startTime = System.currentTimeMillis();
+						
+						modelo.mergeSort(features, featuresAux, 0, features.length-1);
+						
+						long endTime = System.currentTimeMillis();
+						long duration = endTime - startTime;
+						view.printMessage("\nTiempo de ordenamiento Merge Sort: " + duration + " milisegundos");
+						
 						view.printTenFirstAndLast( features );
 					}else
 						view.printMessage("\n¡¡¡Primero copia los comparendos antes de ordenarlos!!!\n");
 					break;
 					
-				case 3: 
+				case 4: 
 					view.printMessage("--------- \n Hasta pronto !! \n---------"); 
 					lector.close();
 					fin = true;

@@ -75,4 +75,8 @@ public class Feature implements Comparable<Feature> {
 		return comparation;
 	}
 	
+	public String toString(){
+		return getObjectId()+"";
+	}
+	
 }

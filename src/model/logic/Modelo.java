@@ -88,6 +88,40 @@ public class Modelo {
 		
 	}
 	
+	public void mergeSort( Comparable[] data, Comparable[] dataAux, int lowIdx, int hiIdx ){
+		
+		if( hiIdx <= lowIdx ) return;
+		
+		int mid = lowIdx + (hiIdx - lowIdx) / 2;
+		
+		mergeSort(data, dataAux, lowIdx, mid);
+		mergeSort(data, dataAux, mid+1, hiIdx);
+		merge(data, dataAux, lowIdx, mid, hiIdx);
+	}
+	
+	private void merge( Comparable[] data, Comparable[] dataAux, int lowIdx, int mid, int hiIdx ){
+		
+		for( int i = lowIdx; i <= hiIdx; i++)
+			dataAux[i] = data[i];
+		
+		int i = lowIdx;
+		int j = mid+1;
+		
+		for( int k = lowIdx; k <= hiIdx; k++ ){
+			
+			if( i > mid )
+				data[k] = dataAux[j++];
+			else if ( j > hiIdx )
+				data[k] = dataAux[i++];
+			else if ( less(dataAux[j], dataAux[i]) )
+				data[k] = dataAux[j++];
+			else
+				data[k] = dataAux[i++];
+			
+		}
+		
+	}
+	
 	private boolean less(Comparable obj1, Comparable obj2){
 		return obj1.compareTo(obj2) < 0;
 	}

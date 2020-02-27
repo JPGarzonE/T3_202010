@@ -1,6 +1,7 @@
 package model.logic;
 
 import model.data_structures.IQueue;
+
 import model.data_structures.Queue;
 
 import java.io.FileNotFoundException;
@@ -119,8 +120,49 @@ public class Modelo {
 				data[k] = dataAux[i++];
 			
 		}
-		
 	}
+	
+	public void quickSort (Comparable[] data, int lowIdx, int highIdx)
+	{
+		if(highIdx <= lowIdx) return;
+		
+		int p = partition(data, lowIdx, highIdx);
+		
+		quickSort(data, lowIdx, p-1);
+		quickSort(data, p+1, highIdx);
+	}
+	
+	private int partition (Comparable[] data, int lowIdx, int highIdx)
+	{
+		int j = highIdx;
+		int i = lowIdx+1;
+		
+		while (i<=j)
+		{
+			if(data[i].compareTo(data[lowIdx])<=0)
+			{
+				i++;
+			}
+			else if(data[j].compareTo(data[lowIdx])>0)
+			{
+				j--;
+			}
+			else {
+				swap(data, i, j);
+			}
+		}
+		swap(data, lowIdx, j);
+		return j;
+	}
+	
+	private void swap (Object [] obj, int i, int j)
+	{
+		Object temporary = obj[i];
+		obj[i]= obj[j];
+		obj[j]= temporary;
+	}
+	
+	
 	
 	private boolean less(Comparable obj1, Comparable obj2){
 		return obj1.compareTo(obj2) < 0;

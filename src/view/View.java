@@ -18,7 +18,8 @@ public class View
 			System.out.println("\n1. Requerimiento 1 (copiar comparendos)");
 			System.out.println("2. Requerimiento 2 (Ordenar ascendentemente con Shell sort)");
 			System.out.println("3. Requerimiento 3 (Ordenar ascendentemente con Merge sort)");
-			System.out.println("4. Exit");
+			System.out.println("4. Requerimiento 4 (Ordenar ascendentemente con Quick sort)");
+			System.out.println("5. Exit");
 			System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 		}
 

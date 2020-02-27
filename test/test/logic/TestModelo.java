@@ -26,52 +26,6 @@ public class TestModelo {
 	}
 
 	@Test
-	public void testDarTamano() {
-		setUp1();
-		
-		assertTrue("El precio debe ser mayor a cero", modelo.getFeaturesSize()>0 );
-		assertEquals( "El tamaño debería ser 150", 150, modelo.getFeaturesSize() );
-	}
-
-	@Test
-	public void testAgregar() {
-		setUp1();
-		
-		assertEquals( "No deben existir datos", 0, modelo.getFeaturesSize());
-
-        try
-        {
-            modelo.agregar(dato);
-            assertEquals( "Debería existir 1 dato", 1, modelo.getFeaturesSize());
-        }
-        catch (Exception e)
-        {
-        	fail("Deberia existir al menos un dato");
-        }
-	}
-
-	@Test
-	public void testBuscar() {
-		setUp1();
-		// TODO Completar la prueba
-		try {
-			modelo.buscar(dato.getObjectId());
-			
-		}
-		catch (Exception e1)
-		{
-			fail ("No encontro nada");
-		}
-		try
-		{
-			assertTrue("El id debe ser mayor o igual cero", dato.getObjectId()>=0);
-		}
-		catch (Exception e2)
-		{
-			fail ("El id es menor a cero");
-		}
-	}
-	
 	public void getFirstFeature(){
 		setUp1();
 		try
@@ -92,6 +46,7 @@ public class TestModelo {
         }
 	}
 	
+	@Test
 	public void getLastFeature(){
 		setUp1();
 		try
@@ -111,4 +66,5 @@ public class TestModelo {
             fail( "Hay un dato despues" );
         }
 	}
+
 }

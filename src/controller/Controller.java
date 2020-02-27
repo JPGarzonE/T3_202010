@@ -78,8 +78,27 @@ public class Controller {
 					}else
 						view.printMessage("\n¡¡¡Primero copia los comparendos antes de ordenarlos!!!\n");
 					break;
-					
-				case 4: 
+				
+				case 4:
+					view.printMessage("--------- \nOrdenando por QuickSort...");
+					if( features != null ){
+						
+						features = modelo.copyFeatures();
+						
+						long startTime = System.currentTimeMillis();
+						
+						modelo.quickSort(features, 0, features.length-1);
+						
+						long endTime = System.currentTimeMillis();
+						long duration = endTime - startTime;
+						view.printMessage("\nTiempo de ordenamiento Quick Sort: "+duration + "milisegundos");
+						
+						view.printTenFirstAndLast( features );
+					}else
+						view.printMessage("\n¡¡¡Primero copia los comparendos antes de ordenarlos!!!\n");
+					break;
+							
+				case 5: 
 					view.printMessage("--------- \n Hasta pronto !! \n---------"); 
 					lector.close();
 					fin = true;

@@ -2,4 +2,4 @@
 
 Juan Pablo Garzón Ebrath    201912575
 
-Juan Andres Santiago
+Juan Andres Santiago Vasquez    201821950
